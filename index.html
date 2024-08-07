@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Checkout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="checkout-container">
+        <h1>Crypto Checkout</h1>
+        <div class="market-prices">
+            <div class="price-widget">
+                <p>BTC Price: <span id="btc-price">Loading...</span></p>
+            </div>
+            <div class="price-widget">
+                <p>ETH Price: <span id="eth-price">Loading...</span></p>
+            </div>
+            <div class="price-widget">
+                <p>BNB Price: <span id="bnb-price">Loading...</span></p>
+            </div>
+        </div>
+        <form id="checkout-form">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required oninput="updateUSDEquivalent()">
+            
+            <label for="currency">Select Cryptocurrency:</label>
+            <select id="currency" name="currency" required onchange="showWarning(); updateUSDEquivalent();">
+                <option value="btc">Bitcoin (BTC)</option>
+                <option value="eth">Ethereum (ETH)</option>
+                <option value="bnb">Binance Coin (BNB)</option>
+            </select>
+
+            <div id="network-warning-btc" class="hidden warning">
+                <p>⚠️ For BTC, please use the Bitcoin Network.</p>
+            </div>
+            <div id="network-warning-eth" class="hidden warning">
+                <p>⚠️ For ETH, please use the Ethereum Network.</p>
+            </div>
+            <div id="network-warning-bnb" class="hidden warning">
+                <p>⚠️ For BNB, please use the Binance Smart Chain (BSC).</p>
+            </div>
+
+            <div id="usd-equivalent" class="hidden">
+                <p>Equivalent in USD: $<span id="usd-amount">0.00</span></p>
+            </div>
+            
+            <button type="button" onclick="generateAddress()">Generate Address</button>
+        </form>
+        
+        <div id="address-container" class="hidden">
+            <h2>Send Payment to:</h2>
+            <p id="crypto-address"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
