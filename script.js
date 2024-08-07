@@ -35,26 +35,33 @@ async function fetchPrices() {
 
 function toggleInputType() {
     const inputType = document.getElementById('input-type').value;
-    if (inputType === 'crypto') {
+    const cryptoLabel = document.getElementById('crypto-label');
+    const cryptoAmount = document.getElementById('crypto-amount');
+    const cryptoConversion = document.getElementById('crypto-usd-conversion');
+    const usdAmount = document.getElementById('usd-amount-input');
+    const usdConversion = document.getElementById('usd-crypto-conversion');
+
+    if (inputType === 'btc' || inputType === 'eth' || inputType === 'bnb') {
+        cryptoLabel.innerText = inputType.toUpperCase();
         document.getElementById('crypto-input').classList.remove('hidden');
         document.getElementById('usd-input').classList.add('hidden');
+        updateUSDEquivalent();
     } else {
         document.getElementById('crypto-input').classList.add('hidden');
         document.getElementById('usd-input').classList.remove('hidden');
+        updateCryptoEquivalent();
     }
-    updateEquivalents();
 }
 
 function updateUSDEquivalent() {
     const amount = document.getElementById('crypto-amount').value;
-    const currency = document.getElementById('currency').value;
+    const inputType = document.getElementById('input-type').value;
 
-    if (amount && currency) {
-        const usdEquivalent = amount * prices[currency];
-        document.getElementById('usd-amount').innerText = usdEquivalent.toFixed(2);
-        document.getElementById('usd-equivalent').classList.remove('hidden');
+    if (amount && inputType) {
+        const usdEquivalent = amount * prices[inputType];
+        document.getElementById('crypto-usd-conversion').innerText = `= $${usdEquivalent.toFixed(2)}`;
     } else {
-        document.getElementById('usd-equivalent').classList.add('hidden');
+        document.getElementById('crypto-usd-conversion').innerText = '';
     }
 }
 
@@ -64,17 +71,15 @@ function updateCryptoEquivalent() {
 
     if (amount && currency) {
         const cryptoEquivalent = amount / prices[currency];
-        document.getElementById('crypto-amount').value = cryptoEquivalent.toFixed(8);
-        document.getElementById('usd-equivalent').classList.remove('hidden');
-        document.getElementById('usd-amount').innerText = amount;
+        document.getElementById('usd-crypto-conversion').innerText = `= ${cryptoEquivalent.toFixed(8)} ${currency.toUpperCase()}`;
     } else {
-        document.getElementById('usd-equivalent').classList.add('hidden');
+        document.getElementById('usd-crypto-conversion').innerText = '';
     }
 }
 
 function updateEquivalents() {
     const inputType = document.getElementById('input-type').value;
-    if (inputType === 'crypto') {
+    if (inputType === 'btc' || inputType === 'eth' || inputType === 'bnb') {
         updateUSDEquivalent();
     } else {
         updateCryptoEquivalent();
@@ -98,7 +103,9 @@ function showWarning() {
 }
 
 function generateAddress() {
-    const amount = document.getElementById('crypto-amount').value || document.getElementById('usd-amount-input').value;
+    const cryptoAmount = document.getElementById('crypto-amount').value;
+    const usdAmount = document.getElementById('usd-amount-input').value;
+    const amount = cryptoAmount || usdAmount;
     const currency = document.getElementById('currency').value;
     const address = addresses[currency];
 
