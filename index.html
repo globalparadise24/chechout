@@ -23,18 +23,22 @@
         <form id="checkout-form">
             <label for="input-type">Input Amount In:</label>
             <select id="input-type" name="input-type" onchange="toggleInputType()">
-                <option value="crypto">Crypto</option>
+                <option value="btc">Bitcoin (BTC)</option>
+                <option value="eth">Ethereum (ETH)</option>
+                <option value="bnb">Binance Coin (BNB)</option>
                 <option value="usd">USD</option>
             </select>
 
             <div id="crypto-input">
-                <label for="crypto-amount">Amount in Crypto:</label>
+                <label for="crypto-amount">Amount in <span id="crypto-label">Crypto</span>:</label>
                 <input type="number" id="crypto-amount" name="crypto-amount" required oninput="updateUSDEquivalent()">
+                <span id="crypto-usd-conversion"></span>
             </div>
 
             <div id="usd-input" class="hidden">
                 <label for="usd-amount-input">Amount in USD:</label>
                 <input type="number" id="usd-amount-input" name="usd-amount-input" required oninput="updateCryptoEquivalent()">
+                <span id="usd-crypto-conversion"></span>
             </div>
             
             <label for="currency">Select Cryptocurrency:</label>
@@ -53,10 +57,6 @@
             <div id="network-warning-bnb" class="hidden warning">
                 <p>⚠️ For BNB, please use the Binance Smart Chain (BSC).</p>
             </div>
-
-            <div id="usd-equivalent" class="hidden">
-                <p>Equivalent in USD: $<span id="usd-amount">0.00</span></p>
-            </div>
             
             <button type="button" onclick="generateAddress()">Generate Address</button>
         </form>
@@ -69,4 +69,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
