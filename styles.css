@@ -81,9 +81,16 @@ button:hover {
     word-wrap: break-word;
 }
 
-#crypto-usd-conversion, #usd-crypto-conversion {
+#fiat-crypto-conversion {
     margin-left: 10px;
     font-weight: bold;
 }
+
+.qr-code {
+    margin-top: 10px;
+    width: 200px;
+    height: 200px;
+}
+
 
 
