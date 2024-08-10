@@ -6,25 +6,34 @@ const addresses = {
     bnb: 'your_bnb_address_here'
 };
 
-const apiUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd';
+const qrCodes = {
+    btc: 'path_to_btc_qr_code_image',
+    eth: 'path_to_eth_qr_code_image',
+    bnb: 'path_to_bnb_qr_code_image'
+};
+
+const apiUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd,cad';
 
 let prices = {
-    btc: 0,
-    eth: 0,
-    bnb: 0
+    btc: { usd: 0, cad: 0 },
+    eth: { usd: 0, cad: 0 },
+    bnb: { usd: 0, cad: 0 }
 };
 
 async function fetchPrices() {
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        prices.btc = data.bitcoin.usd;
-        prices.eth = data.ethereum.usd;
-        prices.bnb = data.binancecoin.usd;
+        prices.btc.usd = data.bitcoin.usd;
+        prices.btc.cad = data.bitcoin.cad;
+        prices.eth.usd = data.ethereum.usd;
+        prices.eth.cad = data.ethereum.cad;
+        prices.bnb.usd = data.binancecoin.usd;
+        prices.bnb.cad = data.binancecoin.cad;
         
-        document.getElementById('btc-price').innerText = `$${prices.btc}`;
-        document.getElementById('eth-price').innerText = `$${prices.eth}`;
-        document.getElementById('bnb-price').innerText = `$${prices.bnb}`;
+        document.getElementById('btc-price').innerText = `$${prices.btc.usd}`;
+        document.getElementById('eth-price').innerText = `$${prices.eth.usd}`;
+        document.getElementById('bnb-price').innerText = `$${prices.bnb.usd}`;
     } catch (error) {
         console.error('Error fetching prices:', error);
         document.getElementById('btc-price').innerText = 'Error';
@@ -35,82 +44,36 @@ async function fetchPrices() {
 
 function toggleInputType() {
     const inputType = document.getElementById('input-type').value;
-    const cryptoLabel = document.getElementById('crypto-label');
-    const cryptoAmount = document.getElementById('crypto-amount');
-    const cryptoConversion = document.getElementById('crypto-usd-conversion');
-    const usdAmount = document.getElementById('usd-amount-input');
-    const usdConversion = document.getElementById('usd-crypto-conversion');
+    const fiatLabel = document.getElementById('fiat-label');
 
-    if (inputType === 'btc' || inputType === 'eth' || inputType === 'bnb') {
-        cryptoLabel.innerText = inputType.toUpperCase();
-        document.getElementById('crypto-input').classList.remove('hidden');
-        document.getElementById('usd-input').classList.add('hidden');
-        updateUSDEquivalent();
-    } else {
-        document.getElementById('crypto-input').classList.add('hidden');
-        document.getElementById('usd-input').classList.remove('hidden');
-        updateCryptoEquivalent();
-    }
-}
-
-function updateUSDEquivalent() {
-    const amount = document.getElementById('crypto-amount').value;
-    const inputType = document.getElementById('input-type').value;
-
-    if (amount && inputType) {
-        const usdEquivalent = amount * prices[inputType];
-        document.getElementById('crypto-usd-conversion').innerText = `= $${usdEquivalent.toFixed(2)}`;
-    } else {
-        document.getElementById('crypto-usd-conversion').innerText = '';
-    }
+    fiatLabel.innerText = inputType.toUpperCase();
+    updateCryptoEquivalent();
 }
 
 function updateCryptoEquivalent() {
-    const amount = document.getElementById('usd-amount-input').value;
+    const amount = document.getElementById('fiat-amount-input').value;
     const currency = document.getElementById('currency').value;
+    const inputType = document.getElementById('input-type').value;
 
     if (amount && currency) {
-        const cryptoEquivalent = amount / prices[currency];
-        document.getElementById('usd-crypto-conversion').innerText = `= ${cryptoEquivalent.toFixed(8)} ${currency.toUpperCase()}`;
+        const cryptoEquivalent = amount / prices[currency][inputType];
+        document.getElementById('fiat-crypto-conversion').innerText = `= ${cryptoEquivalent.toFixed(8)} ${currency.toUpperCase()}`;
     } else {
-        document.getElementById('usd-crypto-conversion').innerText = '';
-    }
-}
-
-function updateEquivalents() {
-    const inputType = document.getElementById('input-type').value;
-    if (inputType === 'btc' || inputType === 'eth' || inputType === 'bnb') {
-        updateUSDEquivalent();
-    } else {
-        updateCryptoEquivalent();
-    }
-}
-
-function showWarning() {
-    const currency = document.getElementById('currency').value;
-
-    document.getElementById('network-warning-btc').classList.add('hidden');
-    document.getElementById('network-warning-eth').classList.add('hidden');
-    document.getElementById('network-warning-bnb').classList.add('hidden');
-
-    if (currency === 'btc') {
-        document.getElementById('network-warning-btc').classList.remove('hidden');
-    } else if (currency === 'eth') {
-        document.getElementById('network-warning-eth').classList.remove('hidden');
-    } else if (currency === 'bnb') {
-        document.getElementById('network-warning-bnb').classList.remove('hidden');
+        document.getElementById('fiat-crypto-conversion').innerText = '';
     }
 }
 
 function generateAddress() {
-    const cryptoAmount = document.getElementById('crypto-amount').value;
-    const usdAmount = document.getElementById('usd-amount-input').value;
-    const amount = cryptoAmount || usdAmount;
+    const fiatAmount = document.getElementById('fiat-amount-input').value;
+    const amount = fiatAmount;
     const currency = document.getElementById('currency').value;
     const address = addresses[currency];
+    const qrCode = qrCodes[currency];
 
     if (amount && currency) {
         document.getElementById('crypto-address').innerText = address;
+        document.getElementById('crypto-qr').src = qrCode;
+        document.getElementById('crypto-qr').classList.remove('hidden');
         document.getElementById('address-container').classList.remove('hidden');
     } else {
         alert('Please enter an amount and select a cryptocurrency.');
@@ -119,4 +82,5 @@ function generateAddress() {
 
 // Fetch prices when the page loads
 fetchPrices();
+
 
