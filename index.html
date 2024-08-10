@@ -23,26 +23,18 @@
         <form id="checkout-form">
             <label for="input-type">Input Amount In:</label>
             <select id="input-type" name="input-type" onchange="toggleInputType()">
-                <option value="btc">Bitcoin (BTC)</option>
-                <option value="eth">Ethereum (ETH)</option>
-                <option value="bnb">Binance Coin (BNB)</option>
+                <option value="cad">CAD</option>
                 <option value="usd">USD</option>
             </select>
 
-            <div id="crypto-input">
-                <label for="crypto-amount">Amount in <span id="crypto-label">Crypto</span>:</label>
-                <input type="number" id="crypto-amount" name="crypto-amount" required oninput="updateUSDEquivalent()">
-                <span id="crypto-usd-conversion"></span>
-            </div>
-
-            <div id="usd-input" class="hidden">
-                <label for="usd-amount-input">Amount in USD:</label>
-                <input type="number" id="usd-amount-input" name="usd-amount-input" required oninput="updateCryptoEquivalent()">
-                <span id="usd-crypto-conversion"></span>
+            <div id="fiat-input">
+                <label for="fiat-amount-input">Amount in <span id="fiat-label">CAD</span>:</label>
+                <input type="number" id="fiat-amount-input" name="fiat-amount-input" required oninput="updateCryptoEquivalent()">
+                <span id="fiat-crypto-conversion"></span>
             </div>
             
             <label for="currency">Select Cryptocurrency:</label>
-            <select id="currency" name="currency" required onchange="showWarning(); updateEquivalents();">
+            <select id="currency" name="currency" required onchange="updateCryptoEquivalent();">
                 <option value="btc">Bitcoin (BTC)</option>
                 <option value="eth">Ethereum (ETH)</option>
                 <option value="bnb">Binance Coin (BNB)</option>
@@ -64,10 +56,12 @@
         <div id="address-container" class="hidden">
             <h2>Send Payment to:</h2>
             <p id="crypto-address"></p>
+            <img id="crypto-qr" src="" alt="QR Code" class="hidden qr-code">
         </div>
     </div>
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
